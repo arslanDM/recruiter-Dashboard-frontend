@@ -380,7 +380,7 @@ const Employer = () => {
               <th scope="col">Job Description</th>
 
               <th scope="col">Date</th>
-              <th scope="col">Actions</th>
+              {/* <th scope="col">Actions</th> */}
             </tr>
           </thead>
           <tbody>
@@ -393,7 +393,7 @@ const Employer = () => {
                   <td>{el?.jobDescription}</td>
                   <td>{el?.date}</td>
 
-                  <td>
+                  {/* <td>
                     <div className="d-flex gap-2">
                       <div>
                         <button
@@ -418,7 +418,7 @@ const Employer = () => {
                         </button>
                       </div>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               );
             })}
