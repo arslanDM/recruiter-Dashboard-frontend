@@ -52,7 +52,7 @@ const AppSidebar = () => {
                 Candidates
               </Link>
             </li>
-            
+
             <li className=" p-2">
               <Link
                 className={`btn w-100 ${
@@ -69,7 +69,7 @@ const AppSidebar = () => {
             <li>
               <Link
                 className={`btn w-100 ${
-                  checkPath("candidates") ? "btn-primary" : ""
+                  checkPath("logout") ? "btn-primary" : ""
                 }`}
                 to="/login"
                 onClick={() => {

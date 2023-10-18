@@ -2,10 +2,20 @@ import { Formik } from "formik";
 import React, { useState } from "react";
 import { candidateSchema } from "../../utills/validation/validationSchema";
 import { Button, Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import {
+  useCreateCandidateMutation,
+  useGetAllCandidatesQuery,
+} from "../../redux/api/user.api";
 
 const Candidates = () => {
+  const token = useSelector((state) => state?.auth.token);
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [createCandidate] = useCreateCandidateMutation();
+  const { data, refetch } = useGetAllCandidatesQuery(token);
   const [selectedData, setSelectedData] = useState({
     id: "",
     email: "",
@@ -99,30 +109,22 @@ const Candidates = () => {
                     validationSchema={candidateSchema}
                     onSubmit={async (values, { resetForm, setSubmitting }) => {
                       console.log(values);
-                      //     try {
-                      //       const payload = {
-                      //         email: values?.email,
-                      //         password: values.password,
-                      //       };
-                      //   const data = await login(payload).unwrap();
-                      //   await myProfile(
-                      //     data?.responseData?.token,
-                      //     data?.responseData?.data?._id
-                      //   );
-                      //   toast.success("Login successful");
-                      //   dispatch(
-                      //     setToken({
-                      //       token: data?.responseData?.token,
-                      //       user: data?.responseData?.data,
-                      //     })
-                      //   );
-                      //   resetForm();
-                      //   setSubmitting(false);
-                      // } catch (error) {
-                      //   setSubmitting(false);
-                      //   console.log(error);
-                      //   toast.error(error?.data?.message);
-                      // }
+                      try {
+                        const payload = {
+                          token: token,
+                          body: values,
+                        };
+                        const data = await createCandidate(payload).unwrap();
+
+                        toast.success("Candidate added successful");
+                        setShowModal(false);
+                        resetForm();
+                        setSubmitting(false);
+                      } catch (error) {
+                        setSubmitting(false);
+                        console.log(error);
+                        toast.error(error?.data?.message);
+                      }
                     }}
                   >
                     {({
@@ -261,7 +263,7 @@ const Candidates = () => {
                                     class="form-control"
                                     id="formGroupExampleInput2"
                                     placeholder="Enter organization"
-                                    name="name"
+                                    name="organization"
                                     value={values.organization}
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -493,11 +495,11 @@ const Candidates = () => {
               <th scope="col">Job Title</th>
               <th scope="col">Experience</th>
               <th scope="col">Status</th>
-              <th scope="col">Actions</th>
+              {/* <th scope="col">Actions</th> */}
             </tr>
           </thead>
           <tbody>
-            {candidates?.map((el, idx) => {
+            {data?.responseData?.map((el, idx) => {
               return (
                 <tr>
                   <td>{el?.id}</td>
@@ -508,7 +510,7 @@ const Candidates = () => {
                   <td>{el?.jobTitle}</td>
                   <td>{el?.experience}</td>
                   <td>{el?.status}</td>
-                  <td>
+                  {/* <td>
                     <div className="d-flex gap-2">
                       <div>
                         <button
@@ -533,7 +535,7 @@ const Candidates = () => {
                         </button>
                       </div>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               );
             })}

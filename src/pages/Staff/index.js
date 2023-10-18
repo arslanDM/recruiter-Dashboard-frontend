@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { staffSchema } from "../../utills/validation/validationSchema";
 import { Button, Modal } from "react-bootstrap";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
-import { useCreateStaffMutation,useGetAllUsersQuery } from "../../redux/api/user.api";
+import {
+  useCreateStaffMutation,
+  useGetAllUsersQuery,
+} from "../../redux/api/user.api";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -82,10 +85,9 @@ const Staff = () => {
                           body: values,
                         }).unwrap();
 
-                        if (result?.status == "sucess") {
-                          toast.success("Recruiter created successfully");
-                          refetch();
-                        }
+                        toast.success("Recruiter created successfully");
+                        refetch();
+                        setShowModal(false);
                         if (result?.error) {
                           toast.error(result?.error?.data?.error?.msg);
                         }
@@ -192,7 +194,7 @@ const Staff = () => {
                                   errors.password}
                               </span>
                             </div>
-                           
+
                             <div className="d-flex justify-content-end gap-3">
                               <button
                                 className="btn btn-danger"
@@ -227,18 +229,18 @@ const Staff = () => {
               {/* <th scope="col">Name</th> */}
               <th scope="col">Email</th>
 
-              <th scope="col">Actions</th>
+              {/* <th scope="col">Actions</th> */}
             </tr>
           </thead>
           <tbody>
             {data?.responseData?.map((el, idx) => {
               return (
                 <tr>
-                  <td>{idx+1}</td>
+                  <td>{idx + 1}</td>
                   {/* <td>{el?.name}</td> */}
                   <td>{el?.email}</td>
 
-                  <td>
+                  {/* <td>
                     <div className="d-flex gap-2">
                       <div>
                         <button
@@ -263,7 +265,7 @@ const Staff = () => {
                         </button>
                       </div>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               );
             })}

@@ -15,7 +15,9 @@ export const candidateSchema = Yup.object({
   email: Yup.string().required("Email Required"),
   name: Yup.string().required("Name Required"),
   skillSet: Yup.string().required("Skills Required"),
-  phoneNumber: Yup.string().required("Phone Required"),
+  phoneNumber: Yup.string()
+    .min(6, "Phone must be 8 digits")
+    .required("Phone Required"),
   cv: Yup.mixed().required("CV Required"),
   organization: Yup.string().required("Organization Required"),
   jobTitle: Yup.string().required("Job title Required"),
