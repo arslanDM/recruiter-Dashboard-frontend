@@ -30,7 +30,7 @@ export const userApi = createApi({
     }),
     getAllUsers: builder.query({
       query: (state) => ({
-        url: "/getEmployer",
+        url: "/getStaff",
         headers: {
           authorization: `Bearer ${state?.userToken}`,
         },

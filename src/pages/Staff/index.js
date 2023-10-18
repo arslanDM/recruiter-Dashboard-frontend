@@ -22,7 +22,7 @@ const Staff = () => {
     password: "",
     jobDescription: "",
   });
- console.log(data?.responseData);
+
   const staffData = [
     {
       id: 1,
@@ -192,31 +192,7 @@ const Staff = () => {
                                   errors.password}
                               </span>
                             </div>
-                            <div class="mb-3 ">
-                              <label
-                                for="formGroupExampleInput2"
-                                class="form-label"
-                              >
-                                Job Description
-                              </label>
-                              <div className="position-relative">
-                                <input
-                                  type="text"
-                                  class="form-control form-icon-trailing"
-                                  id="formGroupExampleInput2"
-                                  placeholder="Enter Job Description"
-                                  name="jobDescription"
-                                  value={values.jobDescription}
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                />
-                              </div>
-                              <span className="validationError">
-                                {errors.jobDescription &&
-                                  touched.jobDescription &&
-                                  errors.jobDescription}
-                              </span>
-                            </div>
+                           
                             <div className="d-flex justify-content-end gap-3">
                               <button
                                 className="btn btn-danger"
@@ -258,7 +234,7 @@ const Staff = () => {
             {data?.responseData?.map((el, idx) => {
               return (
                 <tr>
-                  <td>{el?.id}</td>
+                  <td>{idx+1}</td>
                   {/* <td>{el?.name}</td> */}
                   <td>{el?.email}</td>
 

@@ -8,7 +8,6 @@ export const loginSchema = Yup.object({
 export const staffSchema = Yup.object({
   email: Yup.string().required("Email Required"),
   password: Yup.string().required("Password Required"),
-  jobDescription:Yup.string().required("Job Description required"),
   role: Yup.string().required(),
 });
 
