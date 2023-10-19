@@ -1,22 +1,10 @@
 import React, { useState } from "react";
-import { jobsSchema } from "../../utills/validation/validationSchema";
+import { InterviewsSchema } from "../../utills/validation/validationSchema";
 import { Button, FormSelect, Modal } from "react-bootstrap";
 import { FieldArray, Formik } from "formik";
-import {
-  useGetAllEmployersQuery,
-  useGetAllJobsQuery,
-  useCreateJobMutation,
-} from "../../redux/api/user.api";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-const Jobs = () => {
-  const token = useSelector((state) => state.auth.token);
-  const { data: employers } = useGetAllEmployersQuery(token);
-  const { data: getJobs ,refetch} = useGetAllJobsQuery(token);
-  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+const Interview = () => {
   const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [slots, setSlots] = useState([]);
 
   const handleClose = () => {
     setShowModal(false);
@@ -24,34 +12,7 @@ const Jobs = () => {
   const handleShow = () => {
     setShowModal(true);
   };
-  const combinedData = (values) => {
-    const combinedDates = values.reduce((result, date) => {
-      const existingDate = result.find((d) => d.date === date.date);
 
-      if (existingDate) {
-        existingDate.timeSlots.push({
-          startTime: date.startTime,
-          endTime: date.endTime,
-          timeZone: date.timezone,
-        });
-      } else {
-        result.push({
-          date: date.date,
-          timeSlots: [
-            {
-              startTime: date.startTime,
-              endTime: date.endTime,
-              timeZone: date.timeZone,
-            },
-          ],
-        });
-      }
-
-      return result;
-    }, []);
-
-    return combinedDates;
-  };
   return (
     <div>
       <div className="container py-5 py-sm-4">
@@ -62,59 +23,51 @@ const Jobs = () => {
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>Add Job Form</Modal.Title>
+            <Modal.Title>Add Interview Form</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="row d-flex justify-content-center align-items-center h-100">
               <div className="col-12 col-md-12 col-lg-12 col-xl-12 p-4 p-sm-4">
                 <div className="card p-3 p-sm-4 w-100">
                   <Formik
-                    initialValues={{
-                      jobDescription: "",
-                      employer: "",
-                      dates: [
-                        { date: "", startTime: "", endTime: "", timeZone: "" },
-                      ],
-                    }}
-                    validationSchema={jobsSchema}
-                    onSubmit={async (values, { resetForm, setSubmitting }) => {
-                      let val = combinedData(values.dates);
-                      const jobData = {
-                        jobDescription: values.jobDescription,
-                        employerId: values.employer,
-                        dates: val,
-                      };
-                      try {
-                        const payload = { body: jobData, token: token };
+                  // initialValues={{
+                  //   InterviewDescription: "",
+                  //   employer: "",
+                  //   dates: [
+                  //     { date: "", startTime: "", endTime: "", timeZone: "" },
+                  //   ],
+                  // }}
+                  // validationSchema={InterviewsSchema}
+                  // onSubmit={async (values, { resetForm, setSubmitting }) => {
+                  //   let val = combinedData(values.dates);
+                  //   const InterviewData = {
+                  //     InterviewDescription: values.InterviewDescription,
+                  //     employerId: values.employer,
+                  //     dates: val,
+                  //   };
+                  //   try {
+                  //     const payload = { body: InterviewData, token: token };
 
-                        const data = await createJob(payload).unwrap();
+                  //     const data = await createInterview(payload).unwrap();
 
-                        toast.success("Job added successfully");
-                        refetch();
-                        resetForm();
-                        setShowModal(false);
-                        setSubmitting(false);
-                      } catch (error) {
-                        setSubmitting(false);
-                        console.log(error);
-                        toast.error(error?.data?.message);
-                      }
-                    }}
+                  //     toast.success("Interview added successfully");
+                  //     refetch();
+                  //     resetForm();
+                  //     setShowModal(false);
+                  //     setSubmitting(false);
+                  //   } catch (error) {
+                  //     setSubmitting(false);
+                  //     console.log(error);
+                  //     toast.error(error?.data?.message);
+                  //   }
+                  // }}
                   >
-                    {({
-                      values,
-                      errors,
-                      touched,
-                      handleChange,
-                      handleBlur,
-                      handleSubmit,
-                      isSubmitting,
-                    }) => (
+                    {() => (
                       <div className="card-body">
-                        <form onSubmit={handleSubmit}>
+                        <form>
                           <div className="text-capitalize">
                             <h3 className="mb-4 mb-sm-5 text-center">
-                              Job Form
+                              Interview Form
                             </h3>
                             <div className="row">
                               <div className="col-md-6">
@@ -126,14 +79,14 @@ const Jobs = () => {
                                     Employer
                                   </label>
                                   <FormSelect
-                                    value={values.id}
+                                    // value={values.id}
                                     className="form-control"
                                     name="employer"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                    // onChange={handleChange}
+                                    // onBlur={handleBlur}
                                   >
                                     <option value="">Select employer</option>
-                                    {employers?.responseData?.map((el, idx) => {
+                                    {/* {employers?.responseData?.map((el, idx) => {
                                       return (
                                         <option
                                           className="form-control"
@@ -143,12 +96,12 @@ const Jobs = () => {
                                           {el.name}
                                         </option>
                                       );
-                                    })}
+                                    })} */}
                                   </FormSelect>
                                   <span className="validationError">
-                                    {errors.employer &&
+                                    {/* {errors.employer &&
                                       touched.employer &&
-                                      errors.employer}
+                                      errors.employer} */}
                                   </span>
                                 </div>
                               </div>
@@ -159,23 +112,23 @@ const Jobs = () => {
                                 for="formGroupExampleInput2"
                                 className="form-label"
                               >
-                                Job Description
+                                Interview Description
                               </label>
                               <textarea
                                 rows={10}
                                 type="text"
                                 class="form-control"
                                 id="formGroupExampleInput2"
-                                placeholder="Enter job description"
-                                name="jobDescription"
-                                value={values.jobDescription}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
+                                placeholder="Enter Interview description"
+                                name="InterviewDescription"
+                                // value={values.InterviewDescription}
+                                // onBlur={handleBlur}
+                                // onChange={handleChange}
                               />
                               <span className="validationError">
-                                {errors.jobDescription &&
-                                  touched.jobDescription &&
-                                  errors.jobDescription}
+                                {/* {errors.InterviewDescription &&
+                                  touched.InterviewDescription &&
+                                  errors.InterviewDescription} */}
                               </span>
                             </div>
 
@@ -191,7 +144,7 @@ const Jobs = () => {
                                   name="dates"
                                   render={(arrayHelpers) => (
                                     <div>
-                                      {values.dates.map((el, index) => (
+                                      {/* {values.dates.map((el, index) => (
                                         <div key={index}>
                                           <div className="row mb-2">
                                             <div className="col-md-3">
@@ -304,7 +257,7 @@ const Jobs = () => {
                                           </div>
                                           <hr className="hr" />
                                         </div>
-                                      ))}
+                                      ))} */}
                                       <button
                                         className="btn btn-secondary mt-2"
                                         type="button"
@@ -331,7 +284,7 @@ const Jobs = () => {
                                 className="btn btn-primary "
                                 type="submit"
                               >
-                                Add Job
+                                Add Interview
                               </button>
                             </div>
                           </div>
@@ -345,7 +298,7 @@ const Jobs = () => {
           </Modal.Body>
         </Modal>
         <Button variant="primary" onClick={handleShow}>
-          Add Job
+          Add Interview
         </Button>
         <table className="table">
           <thead>
@@ -353,7 +306,7 @@ const Jobs = () => {
               <th scope="col">ID</th>
               <th scope="col">Name</th>
 
-              <th scope="col">Job Description</th>
+              <th scope="col">Interview Description</th>
 
               <th scope="col">Date</th>
               <th scope="col">Time Slot</th>
@@ -361,13 +314,23 @@ const Jobs = () => {
             </tr>
           </thead>
           <tbody>
-            {getJobs?.responseData?.map((el, idx) => {
+            <tr>
+              <td scope="col">ID</td>
+              <td scope="col">Name</td>
+
+              <td scope="col">Interview Description</td>
+
+              <td scope="col">Date</td>
+              <td scope="col">Time Slot</td>
+              {/* <th scope="col">Actions</th> */}
+            </tr>
+            {/* {getInterviews?.responseData?.map((el, idx) => {
               return (
                 <tr>
                   <td>{idx + 1}</td>
                   <td>{el?.employerId?.name}</td>
 
-                  <td>{el?.jobDescription}</td>
+                  <td>{el?.InterviewDescription}</td>
                   <td>
                     {el?.dates && el.dates[0]
                       ? new Date(el.dates[0].date).toLocaleDateString()
@@ -383,7 +346,7 @@ const Jobs = () => {
                   </FormSelect>
                 </tr>
               );
-            })}
+            })} */}
           </tbody>
         </table>
       </div>
@@ -391,4 +354,4 @@ const Jobs = () => {
   );
 };
 
-export default Jobs;
+export default Interview;

@@ -3,6 +3,7 @@ import Staff from "./pages/Staff";
 import Employer from "./pages/Employer/index";
 import Candidates from "./pages/Candidates";
 import Jobs from "./pages/jobs/Jobs";
+import Interview from "./pages/interview/Interview";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
@@ -39,6 +40,12 @@ const routes = [
     path: "/jobs",
     name: "Jobs",
     element: <Jobs />,
+    exact: true,
+  },
+  {
+    path: "/interview",
+    name: "Interview",
+    element: <Interview />,
     exact: true,
   },
   { path: "*", name: "Page404", element: <Page404 /> },
