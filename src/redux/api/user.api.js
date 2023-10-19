@@ -38,6 +38,26 @@ export const userApi = createApi({
         },
       }),
     }),
+    createEmployer: builder.mutation({
+      query: (payload) => ({
+        url: "/createEmployer",
+        method: "POST",
+        body: payload.body,
+        headers: {
+          authorization: `Bearer ${payload?.token}`,
+        },
+      }),
+    }),
+    createJob: builder.mutation({
+      query: (payload) => ({
+        url: "/createJob",
+        method: "POST",
+        body: payload.body,
+        headers: {
+          authorization: `Bearer ${payload?.token}`,
+        },
+      }),
+    }),
     getAllUsers: builder.query({
       query: (state) => ({
         url: "/getStaff",
@@ -54,6 +74,22 @@ export const userApi = createApi({
         },
       }),
     }),
+    getAllEmployers: builder.query({
+      query: (state) => ({
+        url: "/getEmployer",
+        headers: {
+          authorization: `Bearer ${state}`,
+        },
+      }),
+    }),
+    getAllJobs: builder.query({
+      query: (state) => ({
+        url: "/getJob",
+        headers: {
+          authorization: `Bearer ${state}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -63,7 +99,11 @@ export const {
   useLazyGetProfileQuery,
   useLazyLoadUserQuery,
   useCreateStaffMutation,
+  useCreateEmployerMutation,
   useCreateCandidateMutation,
+  useCreateJobMutation,
   useGetAllUsersQuery,
   useGetAllCandidatesQuery,
+  useGetAllEmployersQuery,
+  useGetAllJobsQuery,
 } = userApi;

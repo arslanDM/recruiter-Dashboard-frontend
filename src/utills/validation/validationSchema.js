@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const loginSchema = Yup.object({
-  email: Yup.string().required("Email Required"),
+  email: Yup.string().email().required("Email Required"),
   password: Yup.string().required("Password Required"),
 });
 
@@ -31,16 +31,6 @@ export const candidateSchema = Yup.object({
 export const employerSchema = Yup.object({
   email: Yup.string().required("Email Required"),
   name: Yup.string().required("Name Required"),
-  jobDescription: Yup.string().required("Job description Required"),
-  date: Yup.date().required("Date  Required"),
-  // timeSlots: Yup.array().of(
-  //   Yup.object().shape({
-  //     date: Yup.date().required("Date  required"),
-  //     startTime: Yup.string().required("start time required"),
-  //     endTime: Yup.string().required("end time required"),
-  //     timeZone: Yup.string().required("Time zone required"),
-  //   })
-  // ),
 });
 
 export const slotSchema = Yup.object({
@@ -48,4 +38,17 @@ export const slotSchema = Yup.object({
   endTime: Yup.string().required("End time required"),
   timeZone: Yup.string().required("Time zone required"),
   status: Yup.string().required("Status required"),
+});
+
+export const jobsSchema = Yup.object().shape({
+  jobDescription: Yup.string().required("Job description required"),
+  employer: Yup.string().required("Employer required"),
+  dates: Yup.array().of(
+    Yup.object().shape({
+      date: Yup.string().required("Date is required"),
+      startTime: Yup.string().required("Start time is required"),
+      endTime: Yup.string().required("End time is required"),
+      timeZone: Yup.string().required("Time zone is required"),
+    })
+  ),
 });
