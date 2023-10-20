@@ -115,6 +115,7 @@ const Jobs = () => {
                       jobId: selectedJob._id,
                       feedbackSlot: feedbackSlot,
                     },
+                    token: token,
                   };
 
                   console.log(payload, 123);
