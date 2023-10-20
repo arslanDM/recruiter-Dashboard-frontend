@@ -1,25 +1,41 @@
 import React, { useState } from "react";
-import { jobsSchema } from "../../utills/validation/validationSchema";
+import {
+  interviewSchema,
+  jobsSchema,
+} from "../../utills/validation/validationSchema";
 import { Button, FormSelect, Modal } from "react-bootstrap";
 import { FieldArray, Formik } from "formik";
 import {
   useGetAllEmployersQuery,
   useGetAllJobsQuery,
   useCreateJobMutation,
+  useGetAllCandidatesQuery,
+  useCreateInterviewMutation,
 } from "../../redux/api/user.api";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 const Jobs = () => {
   const token = useSelector((state) => state.auth.token);
   const { data: employers } = useGetAllEmployersQuery(token);
-  const { data: getJobs ,refetch} = useGetAllJobsQuery(token);
+  const { data: candidates } = useGetAllCandidatesQuery(token);
+  const { data: getJobs, refetch } = useGetAllJobsQuery(token);
   const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const [createInterview] = useCreateInterviewMutation();
+
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [slots, setSlots] = useState([]);
-
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState({
+    name: "",
+    jobDescription: "",
+    date: "",
+    employerId: "",
+    slots: [],
+  });
   const handleClose = () => {
     setShowModal(false);
+    setShowViewModal(false);
   };
   const handleShow = () => {
     setShowModal(true);
@@ -33,6 +49,7 @@ const Jobs = () => {
           startTime: date.startTime,
           endTime: date.endTime,
           timeZone: date.timezone,
+          status: date.status,
         });
       } else {
         result.push({
@@ -42,6 +59,7 @@ const Jobs = () => {
               startTime: date.startTime,
               endTime: date.endTime,
               timeZone: date.timeZone,
+              status: date.status,
             },
           ],
         });
@@ -52,9 +70,289 @@ const Jobs = () => {
 
     return combinedDates;
   };
+  const ViewJobModal = () => {
+    return (
+      <div>
+        <Modal
+          show={showViewModal}
+          onHide={handleClose}
+          className="w-100"
+          size="lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Job</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Formik
+              initialValues={{
+                jobDescription: selectedJob?.jobDescription,
+                employerId: selectedJob?.employerId?._id,
+                date: "",
+                selectedSlot: "",
+                candidateId: "",
+                interviewLink: "",
+              }}
+              validationSchema={interviewSchema}
+              onSubmit={async (values, { resetForm, setSubmitting }) => {
+                try {
+                  // const data = await createJob(payload).unwrap();
+                  const payload = {
+                    body: { ...values, jobId: selectedJob._id },
+                    token: token,
+                  };
+                  console.log(123, payload);
+                  await createInterview(payload);
+                  toast.success("Job added successfully");
+                  refetch();
+                  resetForm();
+                  setShowViewModal(false);
+                  setSubmitting(false);
+                } catch (error) {
+                  setSubmitting(false);
+                  console.log(error);
+                  toast.error(error?.data?.message);
+                }
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+              }) => (
+                <div className="card-body">
+                  <form onSubmit={handleSubmit}>
+                    <div className="text-capitalize">
+                      {/* <h3 className="mb-4 mb-sm-5 text-center">Job</h3> */}
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label
+                              for="formGroupExampleInput"
+                              className="form-label"
+                            >
+                              Employer
+                            </label>
+                            <FormSelect
+                              defaultValue={values.employerId}
+                              className="form-control"
+                              name="employerId"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={true}
+                            >
+                              <option value="">Select employer</option>
+                              {employers?.responseData?.map((el, idx) => {
+                                return (
+                                  <option
+                                    className="form-control"
+                                    value={el._id}
+                                    key={idx}
+                                  >
+                                    {el.name}
+                                  </option>
+                                );
+                              })}
+                            </FormSelect>
+                            <span className="validationError">
+                              {errors.employerId &&
+                                touched.employerId &&
+                                errors.employerId}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div class="mb-3">
+                          <label
+                            for="formGroupExampleInput"
+                            className="form-label"
+                          >
+                            Candidates
+                          </label>
+                          <FormSelect
+                            defaultValue={values.candidate}
+                            className="form-control"
+                            name="candidateId"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          >
+                            <option value="">Select Candidates</option>
+                            {candidates?.responseData?.map((el, idx) => {
+                              return (
+                                <option
+                                  className="form-control"
+                                  value={el._id}
+                                  key={idx}
+                                >
+                                  {el.name}
+                                </option>
+                              );
+                            })}
+                          </FormSelect>
+                          <span className="validationError">
+                            {errors.candidateId &&
+                              touched.candidateId &&
+                              errors.candidateId}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label
+                          for="formGroupExampleInput2"
+                          className="form-label"
+                        >
+                          Interview Link
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="formGroupExampleInput2"
+                          placeholder="Enter interview link"
+                          name="interviewLink"
+                          value={values.interviewLink}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                        />
+                        <span className="validationError">
+                          {errors.interviewLink &&
+                            touched.interviewLink &&
+                            errors.interviewLink}
+                        </span>
+                      </div>
+                      <div class="mb-3">
+                        <label
+                          for="formGroupExampleInput2"
+                          className="form-label"
+                        >
+                          Job Description
+                        </label>
+                        <textarea
+                          disabled={true}
+                          rows={10}
+                          type="text"
+                          className="form-control"
+                          id="formGroupExampleInput2"
+                          placeholder="Enter job description"
+                          name="jobDescription"
+                          value={values.jobDescription}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                        />
+                        <span className="validationError">
+                          {errors.jobDescription &&
+                            touched.jobDescription &&
+                            errors.jobDescription}
+                        </span>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label
+                              for="formGroupExampleInput"
+                              className="form-label"
+                            >
+                              Dates
+                            </label>
+                            <FormSelect
+                              className="form-control"
+                              name="date"
+                              value={values.date}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            >
+                              <option value="">Select Date</option>
+                              {selectedJob?.dates.map((sSlot, idx) => {
+                                return (
+                                  <option key={idx} value={sSlot._id}>
+                                    {sSlot.date}
+                                  </option>
+                                );
+                              })}
+                            </FormSelect>
+                            <span className="validationError">
+                              {errors.date && touched.date && errors.date}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          {values?.date && (
+                            <div className="mb-3">
+                              <label
+                                for="formGroupExampleInput2"
+                                className="form-label"
+                              >
+                                Time Slot
+                              </label>
+                              <FormSelect
+                                name="selectedSlot"
+                                className="form-control"
+                                value={values.selectedSlot}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              >
+                                <option value="">Select Time Slot</option>
+                                {selectedJob?.dates
+                                  .filter((el) => el._id == values.date)?.[0]
+                                  .timeSlots?.map?.((el, idx) => {
+                                    return (
+                                      <option
+                                        key={idx}
+                                        value={el._id}
+                                        disabled={
+                                          el.status == "booked" ? true : false
+                                        }
+                                      >
+                                        {el.startTime}-{el.endTime}{" "}
+                                        {el.status == "booked"
+                                          ? "Booked"
+                                          : "Available"}
+                                      </option>
+                                    );
+                                  })}
+                              </FormSelect>
+                            </div>
+                          )}
+                          {values.date && (
+                            <span className="validationError">
+                              {errors.selectedSlot &&
+                                touched.selectedSlot &&
+                                errors.selectedSlot}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="d-flex justify-content-end gap-3">
+                        <button
+                          className="btn btn-danger"
+                          onClick={handleClose}
+                        >
+                          Cancel
+                        </button>
+                        <button className="btn btn-primary " type="submit">
+                          Create Interview
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </Formik>
+          </Modal.Body>
+        </Modal>
+      </div>
+    );
+  };
+
   return (
     <div>
       <div className="container py-5 py-sm-4">
+        <ViewJobModal />
+
         <Modal
           show={showModal}
           onHide={handleClose}
@@ -73,7 +371,13 @@ const Jobs = () => {
                       jobDescription: "",
                       employer: "",
                       dates: [
-                        { date: "", startTime: "", endTime: "", timeZone: "" },
+                        {
+                          date: "",
+                          startTime: "",
+                          endTime: "",
+                          timeZone: "",
+                          status: "available",
+                        },
                       ],
                     }}
                     validationSchema={jobsSchema}
@@ -355,8 +659,10 @@ const Jobs = () => {
 
               <th scope="col">Job Description</th>
 
-              <th scope="col">Date</th>
-              <th scope="col">Time Slot</th>
+              {/* <th scope="col">Date</th>
+              <th scope="col">Time Slot</th> */}
+              <th scope="col">Action</th>
+
               {/* <th scope="col">Actions</th> */}
             </tr>
           </thead>
@@ -368,19 +674,31 @@ const Jobs = () => {
                   <td>{el?.employerId?.name}</td>
 
                   <td>{el?.jobDescription}</td>
-                  <td>
+                  {/* <td>
                     {el?.dates && el.dates[0]
                       ? new Date(el.dates[0].date).toLocaleDateString()
                       : ""}
                   </td>
-
-                  <FormSelect>
-                    {el?.dates[0]?.timeSlots?.map((slot, slotIdx) => (
-                      <option key={slotIdx} value={slot.startTime}>
-                        {`${slot.startTime} - ${slot.endTime}`}
-                      </option>
-                    ))}
-                  </FormSelect>
+                  <td>
+                    <FormSelect>
+                      {el?.dates[0]?.timeSlots?.map((slot, slotIdx) => (
+                        <option key={slotIdx} value={slot.startTime}>
+                          {`${slot.startTime} - ${slot.endTime}`}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </td> */}
+                  <td>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        setShowViewModal(true);
+                        setSelectedJob(el);
+                      }}
+                    >
+                      View Job
+                    </button>
+                  </td>
                 </tr>
               );
             })}

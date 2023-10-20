@@ -33,13 +33,6 @@ export const employerSchema = Yup.object({
   name: Yup.string().required("Name Required"),
 });
 
-export const slotSchema = Yup.object({
-  startTime: Yup.string().required("Start time required"),
-  endTime: Yup.string().required("End time required"),
-  timeZone: Yup.string().required("Time zone required"),
-  status: Yup.string().required("Status required"),
-});
-
 export const jobsSchema = Yup.object().shape({
   jobDescription: Yup.string().required("Job description required"),
   employer: Yup.string().required("Employer required"),
@@ -51,4 +44,12 @@ export const jobsSchema = Yup.object().shape({
       timeZone: Yup.string().required("Time zone is required"),
     })
   ),
+});
+
+export const interviewSchema = Yup.object({
+  candidateId: Yup.string().required("Candidate is required"),
+  employerId: Yup.string().required("Employer is required"),
+  selectedSlot: Yup.string().required("Time slot is required"),
+  date: Yup.string().required("Date is required"),
+  interviewLink: Yup.string().required("Interview link is required"),
 });

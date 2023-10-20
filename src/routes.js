@@ -42,12 +42,7 @@ const routes = [
     element: <Jobs />,
     exact: true,
   },
-  {
-    path: "/interview",
-    name: "Interview",
-    element: <Interview />,
-    exact: true,
-  },
+
   { path: "*", name: "Page404", element: <Page404 /> },
 ];
 

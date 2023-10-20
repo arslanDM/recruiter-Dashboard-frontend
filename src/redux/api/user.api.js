@@ -58,6 +58,16 @@ export const userApi = createApi({
         },
       }),
     }),
+    createInterview: builder.mutation({
+      query: (payload) => ({
+        url: "/createInterview",
+        method: "POST",
+        body: payload.body,
+        headers: {
+          authorization: `Bearer ${payload?.token}`,
+        },
+      }),
+    }),
     getAllUsers: builder.query({
       query: (state) => ({
         url: "/getStaff",
@@ -102,6 +112,7 @@ export const {
   useCreateEmployerMutation,
   useCreateCandidateMutation,
   useCreateJobMutation,
+  useCreateInterviewMutation,
   useGetAllUsersQuery,
   useGetAllCandidatesQuery,
   useGetAllEmployersQuery,
