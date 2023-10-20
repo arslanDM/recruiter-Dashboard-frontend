@@ -53,3 +53,36 @@ export const interviewSchema = Yup.object({
   date: Yup.string().required("Date is required"),
   interviewLink: Yup.string().required("Interview link is required"),
 });
+
+export const feedbackSchema = Yup.object({
+  status: Yup.string().required("Status is required"),
+  remarks: Yup.string().required("Remarks is required"),
+  date: Yup.string().when("status", (status) => {
+    if (status == "reschedule") {
+      return Yup.string().required("Date is required");
+    } else {
+      return Yup.string().nullable();
+    }
+  }),
+  startTime: Yup.string().when("status", (status) => {
+    if (status == "reschedule") {
+      return Yup.string().required("Start time is required");
+    } else {
+      return Yup.string().nullable();
+    }
+  }),
+  endTime: Yup.string().when("status", (status) => {
+    if (status == "reschedule") {
+      return Yup.string().required("end time is required");
+    } else {
+      return Yup.string().nullable();
+    }
+  }),
+  timeZone: Yup.string().when("status", (status) => {
+    if (status == "reschedule") {
+      return Yup.string().required("Time zone is required");
+    } else {
+      return Yup.string().nullable();
+    }
+  }),
+});

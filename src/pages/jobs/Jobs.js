@@ -96,11 +96,28 @@ const Jobs = () => {
               onSubmit={async (values, { resetForm, setSubmitting }) => {
                 try {
                   // const data = await createJob(payload).unwrap();
-                  const payload = {
-                    body: { ...values, jobId: selectedJob._id },
-                    token: token,
+
+                  const date1 = selectedJob?.dates?.find(
+                    (el) => el._id == values.date
+                  );
+                  const slot1 = date1?.timeSlots?.find(
+                    (el) => el._id == values.selectedSlot
+                  );
+                  const feedbackSlot = {
+                    date: date1.date,
+                    startTime: slot1.startTime,
+                    endTime: slot1.endTime,
+                    timeZone: slot1.timeZone,
                   };
-                  console.log(123, payload);
+                  const payload = {
+                    body: {
+                      ...values,
+                      jobId: selectedJob._id,
+                      feedbackSlot: feedbackSlot,
+                    },
+                  };
+
+                  console.log(payload, 123);
                   await createInterview(payload);
                   toast.success("Job added successfully");
                   refetch();
