@@ -3,8 +3,19 @@ import { Formik } from "formik";
 import { toast } from "react-toastify";
 import { FormSelect } from "react-bootstrap";
 import { feedbackSchema } from "../../utills/validation/validationSchema";
+import { useSelector } from "react-redux";
+import { useGetAllFeedbackByIdQuery } from "../../redux/api/user.api";
+import { useParams } from "react-router-dom";
 
 const StatuTracking = () => {
+  const user = useSelector((state) => state.auth);
+  const { id } = useParams();
+
+  const { data, isLoading } = useGetAllFeedbackByIdQuery({
+    token: user?.token,
+    id: id,
+  });
+
   return (
     <div className="container-fluid py-5 d-flex justify-content-center align-items-center  ">
       <div className="card w-50 ">
@@ -241,11 +252,17 @@ const StatuTracking = () => {
                         {errors.remarks && touched.remarks && errors.remarks}
                       </span>
                     </div>
-                    <div className="d-flex justify-content-end align-items-center">
-                      <button className="btn btn-primary w-25" type="submit">
-                        Submit
-                      </button>
-                    </div>
+                    {user?.user?.role != "admin" ||
+                      (user?.user?.role != "recruiter" ? null : (
+                        <div className="d-flex justify-content-end align-items-center">
+                          <button
+                            className="btn btn-primary w-25"
+                            type="submit"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      ))}
                   </div>
                 </form>
               </div>

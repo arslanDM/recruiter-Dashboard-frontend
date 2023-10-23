@@ -100,6 +100,22 @@ export const userApi = createApi({
         },
       }),
     }),
+    getAllFeedback: builder.query({
+      query: (state) => ({
+        url: "/feedback",
+        headers: {
+          authorization: `Bearer ${state}`,
+        },
+      }),
+    }),
+    getAllFeedbackById: builder.query({
+      query: (state) => ({
+        url: `/feedback/${state.id}`,
+        headers: {
+          authorization: `Bearer ${state.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -117,4 +133,6 @@ export const {
   useGetAllCandidatesQuery,
   useGetAllEmployersQuery,
   useGetAllJobsQuery,
+  useGetAllFeedbackQuery,
+  useGetAllFeedbackByIdQuery,
 } = userApi;

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/slicer/auth.slicer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AppSidebar = () => {
+  const user = useSelector((state) => state.auth.user);
   const [path, setPath] = useState(window?.location?.pathname);
 
   const checkPath = (newPath) => {
@@ -26,19 +27,21 @@ const AppSidebar = () => {
             Dashboard
           </h4>
           <ul className="list-unstyled components ">
-            <li className="p-2">
-              <Link
-                className={`btn w-100 ${
-                  checkPath("staff") ? "btn-primary" : ""
-                }`}
-                to="/staff"
-                onClick={() => {
-                  setPath("staff");
-                }}
-              >
-                Staff
-              </Link>
-            </li>
+            {user?.role === "admin" && (
+              <li className="p-2">
+                <Link
+                  className={`btn w-100 ${
+                    checkPath("staff") ? "btn-primary" : ""
+                  }`}
+                  to="/staff"
+                  onClick={() => {
+                    setPath("staff");
+                  }}
+                >
+                  Staff
+                </Link>
+              </li>
+            )}
             <li className=" p-2">
               <Link
                 className={`btn w-100 ${
@@ -77,6 +80,32 @@ const AppSidebar = () => {
                 }}
               >
                 Jobs
+              </Link>
+            </li>
+            <li className=" p-2">
+              <Link
+                className={`btn w-100 ${
+                  checkPath("interviews") ? "btn-primary" : ""
+                }`}
+                to="/interviews"
+                onClick={() => {
+                  setPath("interviews");
+                }}
+              >
+                Interviews
+              </Link>
+            </li>
+            <li className=" p-2">
+              <Link
+                className={`btn w-100 ${
+                  checkPath("feedback") ? "btn-primary" : ""
+                }`}
+                to="/feedback"
+                onClick={() => {
+                  setPath("feedback");
+                }}
+              >
+                Feedback
               </Link>
             </li>
             <li>

@@ -3,11 +3,14 @@ import Staff from "./pages/Staff";
 import Employer from "./pages/Employer/index";
 import Candidates from "./pages/Candidates";
 import Jobs from "./pages/jobs/Jobs";
+import Interviews from "./pages/interviews/Interviews";
+import Feedback from "./pages/feedback/Feedback";
+import InterviewDetails from "./pages/interviews/InterviewDetails";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const StatusTracking = React.lazy(() =>
-  import("./pages/StatusTacking/StatuTracking")
+  import("./pages/StatusTacking/StatusTracking")
 );
 const Page404 = React.lazy(() => import("./pages/Page404"));
 
@@ -43,7 +46,24 @@ const routes = [
     element: <Jobs />,
     exact: true,
   },
-
+  {
+    path: "/interviews",
+    name: "Interviews",
+    element: <Interviews />,
+    exact: true,
+  },
+  {
+    path: "/interviews/:id",
+    name: "Interviews Details",
+    element: <InterviewDetails />,
+    exact: true,
+  },
+  {
+    path: "/feedback",
+    name: "Feedback",
+    element: <Feedback />,
+    exact: true,
+  },
   { path: "*", name: "Page404", element: <Page404 /> },
 ];
 
