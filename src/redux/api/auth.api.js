@@ -33,6 +33,18 @@ export const authApi = createApi({
         body: { email, password },
       }),
     }),
+    getAllFeedbackById: builder.query({
+      query: (state) => ({
+        url: `/status-tracking/${state.id}`,
+      }),
+    }),
+    createFeedback: builder.mutation({
+      query: (payload) => ({
+        url: `/createFeedback/${payload.id}`,
+        method: "POST",
+        body: payload.body,
+      }),
+    }),
   }),
 });
 
@@ -41,4 +53,6 @@ export const {
   useSignupMutation,
   useLoadUserQuery,
   useLazyLoadUserQuery,
+  useGetAllFeedbackByIdQuery,
+  useCreateFeedbackMutation
 } = authApi;

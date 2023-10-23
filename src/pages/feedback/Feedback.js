@@ -7,6 +7,7 @@ const Feedback = () => {
   const user = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllFeedbackQuery(user?.token);
+  console.log(data);
   const feedbackData = [
     {
       id: 1,
@@ -24,32 +25,25 @@ const Feedback = () => {
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Candidate</th>
-
             <th scope="col">Employer</th>
-
             <th scope="col">Job</th>
-            <th scope="col">Time</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          {feedbackData?.map((el, idx) => {
+          {data?.responseData?.map((el, idx) => {
             return (
-              <tr>
+              <tr key={el._id}>
                 <td>{idx + 1}</td>
-                <td>{el?.candidate}</td>
-                <td>{el?.employer}</td>
-                <td>{el?.job}</td>
-
-                <td>{el?.time}</td>
-
+                <td>{el.candidateId?.name}</td> {/* Display candidate's name */}
+                <td>{el.employerId?.name}</td> {/* Display employer's name */}
+                <td>{el.employerId?.jobDescription}</td>{" "}
+                {/* Display job description */}
                 <td>
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      //   setShowViewModal(true);
-                      //   setSelectedJob(el);
-                      navigate(`/status-tracking/${el.id}`);
+                      navigate(`/feedback-details/${el._id}`);
                     }}
                   >
                     View Feedback

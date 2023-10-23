@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FormSelect } from "react-bootstrap";
 import { feedbackSchema } from "../../utills/validation/validationSchema";
 import { useSelector } from "react-redux";
-import { useGetAllFeedbackByIdQuery } from "../../redux/api/user.api";
+import { useGetAllFeedbackByIdQuery,useCreateFeedbackMutation } from "../../redux/api/auth.api";
 import { useParams } from "react-router-dom";
 
 const StatuTracking = () => {
@@ -12,10 +12,9 @@ const StatuTracking = () => {
   const { id } = useParams();
 
   const { data, isLoading } = useGetAllFeedbackByIdQuery({
-    token: user?.token,
     id: id,
   });
-
+ const [createFeedback]=useCreateFeedbackMutation();
   return (
     <div className="container-fluid py-5 d-flex justify-content-center align-items-center  ">
       <div className="card w-50 ">
@@ -25,9 +24,9 @@ const StatuTracking = () => {
         <div>
           <Formik
             initialValues={{
-              candidate: "",
-              employer: "",
-              status: "",
+              candidate: data?.responseData?.candidate?.name,
+              employer: data?.responseData?.employer?.name,
+              status: data?.responseData?.feedbackStatus?.status,
               remarks: "",
               date: "",
               startTime: "",
@@ -39,11 +38,11 @@ const StatuTracking = () => {
               console.log(values);
               try {
                 const payload = {
-                  email: values?.email,
-                  password: values.password,
+                  body: values,
+                  id
                 };
-                // const data = await login(payload).unwrap();
-
+                const data = await createFeedback(payload).unwrap();
+                
                 resetForm();
                 setSubmitting(false);
               } catch (error) {
@@ -252,17 +251,14 @@ const StatuTracking = () => {
                         {errors.remarks && touched.remarks && errors.remarks}
                       </span>
                     </div>
-                    {user?.user?.role != "admin" ||
-                      (user?.user?.role != "recruiter" ? null : (
-                        <div className="d-flex justify-content-end align-items-center">
-                          <button
-                            className="btn btn-primary w-25"
-                            type="submit"
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      ))}
+
+                    {data?.responseData?.feedbackStatus?.isSubmitted ? null : (
+                      <div className="d-flex justify-content-end align-items-center">
+                        <button className="btn btn-primary w-25" type="submit">
+                          Submit
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>
