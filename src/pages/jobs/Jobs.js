@@ -14,6 +14,7 @@ import {
 } from "../../redux/api/user.api";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
 const Jobs = () => {
   const token = useSelector((state) => state.auth.token);
   const { data: employers } = useGetAllEmployersQuery(token);
@@ -26,6 +27,7 @@ const Jobs = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [slots, setSlots] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
+  const navigate=useNavigate();
   const [selectedJob, setSelectedJob] = useState({
     name: "",
     jobDescription: "",
@@ -709,9 +711,12 @@ const Jobs = () => {
                   <td>
                     <button
                       className="btn btn-primary"
+                      // onClick={() => {
+                      //   setShowViewModal(true);
+                      //   setSelectedJob(el);
+                      // }}
                       onClick={() => {
-                        setShowViewModal(true);
-                        setSelectedJob(el);
+                        navigate(`/jobDetail/${el._id}`);
                       }}
                     >
                       View Job

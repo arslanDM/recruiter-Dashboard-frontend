@@ -12,29 +12,36 @@ const FeedbackDetails = () => {
   };
 
   const { data, isLoading } = useGetFeedBackByIdQuery(showData);
-  console.log(data);
 
   return (
     <div className="container py-5">
       <div className="row mt-3">
-  <div className="col-md-6">
-    <label className="form-label">Candidate</label>
-    <input className="form-control" disabled={true} value={data?.responseData?.candidateId?.name} />
-  </div>
-  <div className="col-md-6">
-    <label className="form-label">Employer</label>
-    <input className="form-control" disabled={true} value={data?.responseData?.employerId?.name} />
-  </div>
-</div>
-<div className="mt-3">
-  <label className="form-label">Job</label>
-  <textarea
-    disabled={true}
-    rows={10}
-    value={data?.responseData?.employerId?.jobDescription}
-    className="form-control"
-  />
-</div>
+        <div className="col-md-6">
+          <label className="form-label">Candidate</label>
+          <input
+            className="form-control"
+            disabled={true}
+            value={data?.responseData?.candidateId?.name}
+          />
+        </div>
+        <div className="col-md-6">
+          <label className="form-label">Employer</label>
+          <input
+            className="form-control"
+            disabled={true}
+            value={data?.responseData?.employerId?.name}
+          />
+        </div>
+      </div>
+      <div className="mt-3">
+        <label className="form-label">Job</label>
+        <textarea
+          disabled={true}
+          rows={10}
+          value={data?.responseData?.employerId?.jobDescription}
+          className="form-control"
+        />
+      </div>
 
       <div className="mt-3">
         <h5>History</h5>

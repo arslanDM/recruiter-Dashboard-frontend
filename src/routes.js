@@ -7,7 +7,7 @@ import Interviews from "./pages/interviews/Interviews";
 import Feedback from "./pages/feedback/Feedback";
 import InterviewDetails from "./pages/interviews/InterviewDetails";
 import FeedbackDetails from "./pages/feedback/FeedbackDetails";
-
+import JobDetail from "./pages/jobs/JobDetail";
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const StatusTracking = React.lazy(() =>
@@ -46,6 +46,12 @@ const routes = [
     name: "Jobs",
     element: <Jobs />,
     exact: true,
+  },
+  {
+    path:"/jobDetail/:id",
+    name:"job Detail",
+    element:<JobDetail />,
+    exact:true
   },
   {
     path: "/interviews",

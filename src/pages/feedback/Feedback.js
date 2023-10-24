@@ -7,7 +7,7 @@ const Feedback = () => {
   const user = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllFeedbackQuery(user?.token);
-  console.log(data);
+
   const feedbackData = [
     {
       id: 1,
