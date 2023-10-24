@@ -108,14 +108,22 @@ export const userApi = createApi({
         },
       }),
     }),
-   getFeedBackById:builder.query({
-    query: (state) => ({
-      url: `/getFeedbackbyId/${state.id}`,
-      headers: {
-        authorization: `Bearer ${state.token}`,
-      },
+    getFeedBackById: builder.query({
+      query: (state) => ({
+        url: `/getFeedbackbyId/${state.id}`,
+        headers: {
+          authorization: `Bearer ${state.token}`,
+        },
+      }),
     }),
-   })
+    getJobById: builder.query({
+      query: (state) => ({
+        url: `/getJob/${state.id}`,
+        headers: {
+          authorization: `Bearer ${state.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -134,5 +142,6 @@ export const {
   useGetAllEmployersQuery,
   useGetAllJobsQuery,
   useGetAllFeedbackQuery,
-  useGetFeedBackByIdQuery
+  useGetFeedBackByIdQuery,
+  useGetJobByIdQuery,
 } = userApi;
