@@ -48,23 +48,23 @@ const routes = [
     exact: true,
   },
   {
-    path:"/jobDetail/:id",
-    name:"job Detail",
-    element:<JobDetail />,
-    exact:true
-  },
-  {
-    path: "/interviews",
-    name: "Interviews",
-    element: <Interviews />,
+    path: "/jobDetail/:id",
+    name: "job Detail",
+    element: <JobDetail />,
     exact: true,
   },
-  {
-    path: "/interviews/:id",
-    name: "Interviews Details",
-    element: <InterviewDetails />,
-    exact: true,
-  },
+  // {
+  //   path: "/interviews",
+  //   name: "Interviews",
+  //   element: <Interviews />,
+  //   exact: true,
+  // },
+  // {
+  //   path: "/interviews/:id",
+  //   name: "Interviews Details",
+  //   element: <InterviewDetails />,
+  //   exact: true,
+  // },
   {
     path: "/feedback",
     name: "Feedback",

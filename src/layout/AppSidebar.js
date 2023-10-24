@@ -82,19 +82,7 @@ const AppSidebar = () => {
                 Jobs
               </Link>
             </li>
-            <li className=" p-2">
-              <Link
-                className={`btn w-100 ${
-                  checkPath("interviews") ? "btn-primary" : ""
-                }`}
-                to="/interviews"
-                onClick={() => {
-                  setPath("interviews");
-                }}
-              >
-                Interviews
-              </Link>
-            </li>
+
             <li className=" p-2">
               <Link
                 className={`btn w-100 ${
