@@ -3,28 +3,31 @@ import { FormSelect, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
-import {
-  interviewModalSchema,
-  interviewSchema,
-} from "../../utills/validation/validationSchema";
+import { interviewSchema } from "../../utills/validation/validationSchema";
 import {
   useGetJobByIdQuery,
   useGetAllCandidatesQuery,
   useCreateInterviewMutation,
 } from "../../redux/api/user.api";
+import { useGetInterviewByJobIdQuery } from "../../redux/api/user.api";
 
 const JobDetail = () => {
   const { id } = useParams();
   const token = useSelector((state) => state?.auth.token);
-  const { data } = useGetJobByIdQuery({ token: token, id: id });
+  const { data: job } = useGetJobByIdQuery({ token: token, id: id });
   const { data: candidates } = useGetAllCandidatesQuery(token);
+  const { data: interviews, refetch } = useGetInterviewByJobIdQuery({
+    token: token,
+    id: id,
+  });
   const [createInterview] = useCreateInterviewMutation();
+
   const [showModal, setShowModal] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  console.log(data, 123);
+  console.log(123, interviews);
 
   return (
     <div className="container py-5">
@@ -44,12 +47,12 @@ const JobDetail = () => {
               date: "",
               selectedSlot: "",
               interviewLink: "",
-              employerId: data?.responseData?.employerId?._id,
+              employerId: job?.responseData?.employerId?._id,
             }}
             validationSchema={interviewSchema}
             onSubmit={async (values, { setSubmitting }) => {
               console.log(values);
-              const date1 = data?.responseData?.dates?.find(
+              const date1 = job?.responseData?.dates?.find(
                 (el) => el._id == values.date
               );
               const slot1 = date1?.timeSlots?.find(
@@ -63,10 +66,11 @@ const JobDetail = () => {
               };
               try {
                 const payload = {
-                  body: { ...values, jobId: id, feedbackSlot: feedbackSlot },
+                  body: { ...values, jobId: id, feedback: feedbackSlot },
                   token: token,
                 };
                 await createInterview(payload).unwrap();
+                refetch();
                 handleCloseModal();
                 setSubmitting(false);
               } catch (error) {
@@ -120,7 +124,7 @@ const JobDetail = () => {
                       className="form-control"
                     >
                       <option value="">Select date</option>
-                      {data?.responseData?.dates?.map((el, idx) => (
+                      {job?.responseData?.dates?.map((el, idx) => (
                         <option
                           key={idx}
                           value={el._id}
@@ -144,7 +148,7 @@ const JobDetail = () => {
                         onBlur={handleBlur}
                       >
                         <option value="">Select time</option>
-                        {data?.responseData?.dates
+                        {job?.responseData?.dates
                           ?.filter((el) => el._id == values.date)[0]
                           ?.timeSlots?.map((slot, idx) => (
                             <option
@@ -203,7 +207,7 @@ const JobDetail = () => {
 
         <textarea
           className="form-control"
-          value={data?.responseData?.jobDescription}
+          value={job?.responseData?.jobDescription}
           disabled={true}
         />
       </div>
@@ -213,13 +217,13 @@ const JobDetail = () => {
           <label className="form=label">Employer</label>
           <input
             disabled={true}
-            value={data?.responseData?.employerId?.name}
+            value={job?.responseData?.employerId?.name}
             className="form-control"
           />
         </div>
         <div className="col-md-6">
           <label className="form=label">Slots</label>
-          {data?.responseData?.dates?.map((el, idx) => {
+          {job?.responseData?.dates?.map((el, idx) => {
             return el?.timeSlots?.map((slot, ind) => (
               <input
                 key={ind}
@@ -251,21 +255,16 @@ const JobDetail = () => {
             </tr>
           </thead>
           <tbody>
-            {[
-              {
-                candidate: "john",
-                date: "22-20-2023",
-                time: "12:00pm-03:00pm",
-                status: "in-process",
-              },
-            ].map((el, idx) => {
+            {interviews?.responseData?.map((el, idx) => {
               return (
                 <tr>
                   <td>{idx + 1}</td>
-                  <td>{el?.candidate}</td>
-                  <td>{el?.date}</td>
-                  <td>{el?.time}</td>
-                  <td>{el?.status}</td>
+                  <td>{el?.candidateId.name}</td>
+                  <td>{el?.feedback?.date}</td>
+                  <td>
+                    {el?.feedback?.startTime + "-" + el?.feedback?.endTime}
+                  </td>
+                  <td>{el?.feedback?.status}</td>
 
                   {/* <td>
                     <div className="d-flex gap-2">

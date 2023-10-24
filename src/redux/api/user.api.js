@@ -124,6 +124,17 @@ export const userApi = createApi({
         },
       }),
     }),
+    getInterviewByJobId: builder.query({
+      query: (payload) => {
+        return {
+          url: `getInterviewByjobId/${payload.id}`,
+          method: "get",
+          headers: {
+            authorization: `Bearer ${payload.token}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -144,4 +155,5 @@ export const {
   useGetAllFeedbackQuery,
   useGetFeedBackByIdQuery,
   useGetJobByIdQuery,
+  useGetInterviewByJobIdQuery,
 } = userApi;
