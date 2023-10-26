@@ -1,20 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { toast } from "react-toastify";
 import { FormSelect } from "react-bootstrap";
 import { feedbackSchema } from "../../utills/validation/validationSchema";
 import { useSelector } from "react-redux";
-import { useGetAllFeedbackByIdQuery,useCreateFeedbackMutation } from "../../redux/api/auth.api";
+
+import {
+  useGetAllFeedbackByIdQuery,
+  useCreateFeedbackMutation,
+} from "../../redux/api/auth.api";
 import { useParams } from "react-router-dom";
 
 const StatuTracking = () => {
+  const [candidate11, setCandidate] = useState();
+  const [employer, setEmployer] = useState();
+  const [status, setStatus] = useState();
   const user = useSelector((state) => state.auth);
   const { id } = useParams();
 
-  const { data, isLoading } = useGetAllFeedbackByIdQuery({
+  const { data, isLoading, refetch } = useGetAllFeedbackByIdQuery({
     id: id,
   });
- const [createFeedback]=useCreateFeedbackMutation();
+  useEffect(() => {
+    setCandidate(data?.responseData?.candidate?.name);
+    setEmployer(data?.responseData?.employer?.name);
+    setStatus(data?.responseData?.feedbackStatus?.feedback.status);
+  }, [data, isLoading, candidate11]);
+  console.log(isLoading, 123, data, candidate11);
+  const [createFeedback] = useCreateFeedbackMutation();
   return (
     <div className="container-fluid py-5 d-flex justify-content-center align-items-center  ">
       <div className="card w-50 ">
@@ -23,10 +36,11 @@ const StatuTracking = () => {
         </div>
         <div>
           <Formik
+            key={(candidate11, employer, status)}
             initialValues={{
-              candidate: data?.responseData?.candidate?.name,
+              candidate: candidate11,
               employer: data?.responseData?.employer?.name,
-              status: data?.responseData?.feedbackStatus?.status,
+              status: data?.responseData?.feedbackStatus?.feedback?.status,
               remarks: "",
               date: "",
               startTime: "",
@@ -35,14 +49,14 @@ const StatuTracking = () => {
             }}
             validationSchema={feedbackSchema}
             onSubmit={async (values, { resetForm, setSubmitting }) => {
-              console.log(values);
               try {
                 const payload = {
                   body: values,
-                  id
+                  id,
                 };
                 const data = await createFeedback(payload).unwrap();
-                
+                toast.success("Feedback added Successfully");
+                refetch();
                 resetForm();
                 setSubmitting(false);
               } catch (error) {
@@ -68,17 +82,11 @@ const StatuTracking = () => {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label
-                            for="formGroupExampleInput"
-                            className="form-label"
-                          >
-                            Candidate
-                          </label>
+                          <label className="form-label">Candidate</label>
                           <input
                             disabled={true}
                             type="text"
                             className="form-control"
-                            id="formGroupExampleInput"
                             placeholder="Enter name"
                             name="candidate"
                             value={values.candidate}
@@ -89,12 +97,7 @@ const StatuTracking = () => {
                       </div>
                       <div className="col-md-6 mb-3">
                         <div className="mb-3">
-                          <label
-                            for="formGroupExampleInput"
-                            className="form-label"
-                          >
-                            Employer
-                          </label>
+                          <label className="form-label">Employer</label>
                           <input
                             disabled={true}
                             type="text"
@@ -102,7 +105,7 @@ const StatuTracking = () => {
                             id="formGroupExampleInput"
                             placeholder="Enter name"
                             name="employer"
-                            value={values.employer}
+                            value={employer}
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
@@ -112,13 +115,12 @@ const StatuTracking = () => {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label
-                            for="formGroupExampleInput"
-                            className="form-label"
-                          >
-                            Status
-                          </label>
+                          <label className="form-label">Status</label>
                           <FormSelect
+                            disabled={
+                              data?.responseData?.feedbackStatus?.feedback
+                                ?.isSubmitted
+                            }
                             id="formGroupExampleInput"
                             className="form-control"
                             name="status"
@@ -170,6 +172,10 @@ const StatuTracking = () => {
                               value={values.date}
                               onChange={handleChange}
                               onBlur={handleBlur}
+                              disabled={
+                                data?.responseData?.feedbackStatus?.feedback
+                                  ?.isSubmitted
+                              }
                             />
                             <span className="validationError">
                               {errors.date && touched.date && errors.date}
@@ -185,6 +191,10 @@ const StatuTracking = () => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                               name="startTime"
+                              disabled={
+                                data?.responseData?.feedbackStatus?.feedback
+                                  ?.isSubmitted
+                              }
                             />
                             <span className="validationError">
                               {errors.startTime &&
@@ -202,6 +212,10 @@ const StatuTracking = () => {
                               value={values.endTime}
                               onChange={handleChange}
                               onBlur={handleBlur}
+                              disabled={
+                                data?.responseData?.feedbackStatus?.feedback
+                                  ?.isSubmitted
+                              }
                             />
                             <span className="validationError">
                               {errors.endTime &&
@@ -219,6 +233,10 @@ const StatuTracking = () => {
                               value={values.timeZone}
                               onChange={handleChange}
                               onBlur={handleBlur}
+                              disabled={
+                                data?.responseData?.feedbackStatus?.feedback
+                                  ?.isSubmitted
+                              }
                             />
                             <span className="validationError">
                               {errors.timeZone &&
@@ -230,13 +248,12 @@ const StatuTracking = () => {
                       </div>
                     )}
                     <div className="mb-3">
-                      <label
-                        for="formGroupExampleInput2"
-                        className="form-label"
-                      >
-                        Remarks
-                      </label>
+                      <label className="form-label">Remarks</label>
                       <textarea
+                        disabled={
+                          data?.responseData?.feedbackStatus?.feedback
+                            ?.isSubmitted
+                        }
                         rows={10}
                         type="text"
                         className="form-control"
@@ -252,7 +269,8 @@ const StatuTracking = () => {
                       </span>
                     </div>
 
-                    {data?.responseData?.feedbackStatus?.isSubmitted ? null : (
+                    {data?.responseData?.feedbackStatus?.feedback
+                      ?.isSubmitted ? null : (
                       <div className="d-flex justify-content-end align-items-center">
                         <button className="btn btn-primary w-25" type="submit">
                           Submit

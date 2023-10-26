@@ -40,8 +40,8 @@ export const authApi = createApi({
     }),
     createFeedback: builder.mutation({
       query: (payload) => ({
-        url: `/createFeedback/${payload.id}`,
-        method: "POST",
+        url: `/updateInterviewCreateFeedback/${payload.id}`,
+        method: "PATCH",
         body: payload.body,
       }),
     }),

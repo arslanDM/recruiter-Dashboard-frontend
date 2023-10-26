@@ -83,7 +83,7 @@ const AppSidebar = () => {
               </Link>
             </li>
 
-            <li className=" p-2">
+            {/* <li className=" p-2">
               <Link
                 className={`btn w-100 ${
                   checkPath("feedback") ? "btn-primary" : ""
@@ -95,7 +95,7 @@ const AppSidebar = () => {
               >
                 Feedback
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className={`btn w-100 ${

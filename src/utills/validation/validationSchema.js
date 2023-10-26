@@ -55,6 +55,7 @@ export const interviewSchema = Yup.object({
 });
 
 export const feedbackSchema = Yup.object({
+  candidate: Yup.string().required("Status is required"),
   status: Yup.string().required("Status is required"),
   remarks: Yup.string().required("Remarks is required"),
   date: Yup.string().when("status", (status) => {

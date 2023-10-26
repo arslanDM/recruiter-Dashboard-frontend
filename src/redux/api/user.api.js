@@ -110,7 +110,7 @@ export const userApi = createApi({
     }),
     getFeedBackById: builder.query({
       query: (state) => ({
-        url: `/getFeedbackbyId/${state.id}`,
+        url: `/getFeedbackbyInterviewId/${state.id}`,
         headers: {
           authorization: `Bearer ${state.token}`,
         },
@@ -135,6 +135,18 @@ export const userApi = createApi({
         };
       },
     }),
+    reschedule: builder.query({
+      query: (payload) => {
+        return {
+          url: `rescheduleInterview/${payload.id}`,
+          method: "get",
+          headers: {
+            authorization: `Bearer ${payload.token}`,
+          },
+        };
+      },
+    }),
+    
   }),
 });
 
@@ -156,4 +168,5 @@ export const {
   useGetFeedBackByIdQuery,
   useGetJobByIdQuery,
   useGetInterviewByJobIdQuery,
+   useRescheduleQuery
 } = userApi;

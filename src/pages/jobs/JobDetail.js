@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FormSelect, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { interviewSchema } from "../../utills/validation/validationSchema";
 import {
@@ -9,17 +9,24 @@ import {
   useGetAllCandidatesQuery,
   useCreateInterviewMutation,
 } from "../../redux/api/user.api";
-import { useGetInterviewByJobIdQuery } from "../../redux/api/user.api";
+import { useGetInterviewByJobIdQuery,useRescheduleQuery } from "../../redux/api/user.api";
+import { toast } from "react-toastify";
 
 const JobDetail = () => {
   const { id } = useParams();
+  const [reschedule,setReschedule]=useState('');
+  const navigate = useNavigate();
   const token = useSelector((state) => state?.auth.token);
-  const { data: job } = useGetJobByIdQuery({ token: token, id: id });
+  const { data: job } = useGetJobByIdQuery({ token: token, 
+    id: id });
+   const {refetch:fetchReschedule}=useRescheduleQuery({token:token,id:reschedule})
+
   const { data: candidates } = useGetAllCandidatesQuery(token);
   const { data: interviews, refetch } = useGetInterviewByJobIdQuery({
     token: token,
     id: id,
   });
+   
   const [createInterview] = useCreateInterviewMutation();
 
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +35,12 @@ const JobDetail = () => {
     setShowModal(false);
   };
   console.log(123, interviews);
-
+   const rescdule=(id)=>{
+    console.log(id);
+    setReschedule(id);
+    fetchReschedule();
+    toast.success("Interview Reschedule successfully")
+   }
   return (
     <div className="container py-5">
       <Modal
@@ -71,7 +83,9 @@ const JobDetail = () => {
                 };
                 await createInterview(payload).unwrap();
                 refetch();
+                toast.success("Interview added Successfully");
                 handleCloseModal();
+
                 setSubmitting(false);
               } catch (error) {
                 console.log(error);
@@ -252,6 +266,7 @@ const JobDetail = () => {
               <th scope="col">Date</th>
               <th scope="col">Time</th>
               <th scope="col">Status</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -260,11 +275,31 @@ const JobDetail = () => {
                 <tr>
                   <td>{idx + 1}</td>
                   <td>{el?.candidateId.name}</td>
-                  <td>{el?.feedback?.date}</td>
+                  <td>{el?.feedback?.date.slice(0, 10)}</td>
                   <td>
                     {el?.feedback?.startTime + "-" + el?.feedback?.endTime}
                   </td>
                   <td>{el?.feedback?.status}</td>
+                  <td>
+                    {el?.feedback?.status === "reschedule" && (
+                      <button
+                        onClick={()=>{rescdule(el._id)}}
+                        className="btn btn-primary"
+                        style={{ marginRight: "10px" }}
+                      >
+                        Reschedule
+                      </button>
+                    )}
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        navigate(`/interview_detail/${el._id}`);
+                      }}
+                    >
+                      View Interview
+                    </button>
+                  </td>
 
                   {/* <td>
                     <div className="d-flex gap-2">

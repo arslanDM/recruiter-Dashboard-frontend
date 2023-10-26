@@ -716,7 +716,7 @@ const Jobs = () => {
                       //   setSelectedJob(el);
                       // }}
                       onClick={() => {
-                        navigate(`/jobDetail/${el._id}`);
+                        navigate(`/jobDetail/${el._id}`); 
                       }}
                     >
                       View Job

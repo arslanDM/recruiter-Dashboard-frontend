@@ -5,7 +5,7 @@ import Candidates from "./pages/Candidates";
 import Jobs from "./pages/jobs/Jobs";
 import Interviews from "./pages/interviews/Interviews";
 import Feedback from "./pages/feedback/Feedback";
-import InterviewDetails from "./pages/interviews/InterviewDetails";
+import InterviewDetail from "./pages/jobs/InterviewDetail";
 import FeedbackDetails from "./pages/feedback/FeedbackDetails";
 import JobDetail from "./pages/jobs/JobDetail";
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
@@ -53,18 +53,24 @@ const routes = [
     element: <JobDetail />,
     exact: true,
   },
+  {
+    path: "/jobDetail/:id",
+    name: "job Detail",
+    element: <JobDetail />,
+    exact: true,
+  },
   // {
   //   path: "/interviews",
   //   name: "Interviews",
   //   element: <Interviews />,
   //   exact: true,
   // },
-  // {
-  //   path: "/interviews/:id",
-  //   name: "Interviews Details",
-  //   element: <InterviewDetails />,
-  //   exact: true,
-  // },
+   {
+    path: "/interview_detail/:id",
+    name: "Interviews Detail",
+    element: <InterviewDetail />,
+    exact: true,
+  },
   {
     path: "/feedback",
     name: "Feedback",
